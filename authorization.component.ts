@@ -17,16 +17,18 @@ export class AuthorizationComponent implements OnInit {
       const topWindow:any = window.top;
       topWindow.addEventListener("message", (event:any) => {
         if (localStorage.getItem("userToken") == null) {
-          if (event.origin === "http://localhost:4200/" || event.origin === "https://theislamicnation.web.app/"|| event.origin === "https://theislamicnation.com/") {
-            return;
-          } else {
-            if (event.data['type'] === "credential") {
-              if (event.data.getToken !== 'undefined') {
+          // if (event.origin === "http://localhost:4200/"
+          // || event.origin === "https://theislamicnation.web.app/"
+          // || event.origin === "https://theislamicnation.com/") {
+          //   return;
+          // } else {
+          //   if (event.data['type'] === "credential") {
+          //     if (event.data.getToken !== 'undefined') {
                 localStorage.setItem("userToken", event.data.getToken)
                 localStorage.setItem("UserInfo", event.data.getUserInfo)
-              }
-            }
-          }
+          //     }
+          //   }
+          // }
         }
       }, false);
     }
