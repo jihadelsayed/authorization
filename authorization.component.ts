@@ -11,8 +11,8 @@ export class AuthorizationComponent implements OnInit {
   constructor() { }
   frameSrc = environment.LoginURL + window.navigator.language.substring(0, 2)+"/#/getCredential"+"?"+ "host="+ window.location.href+"&"+"language="+ window.navigator.language +"&" + "pathname="+window.location.pathname;
   ngOnInit() {
-    console.log("va"+this.frameSrc);
-    (document.getElementById('iframeAccount')as any)["src"] = this.frameSrc;
+    //console.log("va"+this.frameSrc);
+    //(document.getElementById('iframeAccount')as any)["src"] = this.frameSrc;
 
     // Authorization
     if (localStorage.getItem("userToken") || null == null) {
@@ -24,12 +24,13 @@ export class AuthorizationComponent implements OnInit {
             return;
           } else {
             //console.log( window.location.protocol + '//' + window.location.host)
-            console.log(event)
+            //console.log(event)
 
             if (event.data['type'] === "credential") {
               if (event.data.getToken !== 'undefined') {
                 localStorage.setItem("userToken", event.data.getToken)
                 localStorage.setItem("UserInfo", event.data.getUserInfo)
+                topWindow.removeEventListener("message", event)
               }
             }
           }
