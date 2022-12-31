@@ -9,8 +9,7 @@ import { environment } from 'src/environments/environment';
 export class AuthorizationComponent implements OnInit {
 
   constructor() { }
-  LoginURL = environment.LoginURL;
-  frameSrc:any
+  frameSrc = environment.LoginURL + window.navigator.language.substring(0, 2)+"/#/getCredential";
   ngOnInit() {
     // Authorization
     if (localStorage.getItem("userToken") == null) {
@@ -33,9 +32,7 @@ export class AuthorizationComponent implements OnInit {
       }, false);
     }
 
-    this.frameSrc= this.LoginURL+ window.navigator.language.substring(0, 2)+"/#/getCredential";
-    (document.getElementById('iframeAccount')as any)["src"] = this.frameSrc;
-    console.log(this.frameSrc)
+    // (document.getElementById('iframeAccount')as any)["src"] = this.frameSrc;
   }
 
 }
