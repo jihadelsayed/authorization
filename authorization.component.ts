@@ -33,7 +33,7 @@ export class AuthorizationComponent implements OnInit {
       }, false);
     }
 
-    this.frameSrc= this.LoginURL+ window.navigator.language.substring(0, 2)+"/#/getCredential"+"?"+ "host="+ window.location.href+"&"+"language="+ window.navigator.language +"&" + "pathname="+window.location.pathname;
+    this.frameSrc= this.LoginURL+ window.navigator.language.substring(0, 2)+"/#/getCredential";
     (document.getElementById('iframeAccount')as any)["src"] = this.frameSrc;
     console.log(this.frameSrc)
   }

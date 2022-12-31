@@ -26,8 +26,12 @@ export class JwtInterceptor implements HttpInterceptor {
 
             // auto logout if 401 response returned from api
             localStorage.removeItem('userToken');
+            const ho = window.location.hostname
+            window.location.replace(
+              "http://accounts." + ho.substring(ho.lastIndexOf(".", ho.lastIndexOf(".") - 1) + 1) || 'neetechs.com'
+              +':' + '80'
+              )
             //this.router.navigate(['/login']);
-            location.reload();
           }
           //  console.log(error)
 
