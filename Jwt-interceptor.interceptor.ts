@@ -9,11 +9,12 @@ import {
 } from '@angular/common/http';
 
 import { catchError, Observable, throwError } from 'rxjs';
+import { StyleModeService } from '../header/style-mode.service';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
 
-  constructor() { }
+  constructor(public styleModeService: StyleModeService) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { StyleModeService } from '../header/style-mode.service';
 
 @Component({
   selector: 'app-authorization',
@@ -8,7 +9,7 @@ import { environment } from 'src/environments/environment';
 })
 export class AuthorizationComponent implements OnInit {
 
-  constructor() { }
+  constructor(public styleModeService: StyleModeService) { }
   frameSrc = environment.LoginURL + window.navigator.language.substring(0, 2)+"/#/getCredential"+"?"+ "host="+ window.location.href+"&"+"language="+ window.navigator.language +"&" + "pathname="+window.location.pathname;
   ngOnInit() {
     //console.log("va"+this.frameSrc);
