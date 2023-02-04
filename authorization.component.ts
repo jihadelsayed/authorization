@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, LOCALE_ID, Inject } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { StyleModeService } from '../header/style-mode.service';
 
@@ -9,7 +9,7 @@ import { StyleModeService } from '../header/style-mode.service';
 })
 export class AuthorizationComponent implements OnInit {
 
-  constructor(public styleModeService: StyleModeService) { }
+  constructor(@Inject(LOCALE_ID) public localeId: string, public styleModeService: StyleModeService) { }
   frameSrc = environment.LoginURL + window.navigator.language.substring(0, 2)+"/#/getCredential"+"?"+ "host="+ window.location.href+"&"+"language="+ window.navigator.language +"&" + "pathname="+window.location.pathname;
   ngOnInit() {
     //console.log("va"+this.frameSrc);
