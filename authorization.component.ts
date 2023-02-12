@@ -10,7 +10,7 @@ import { StyleModeService } from '../header/style-mode.service';
 export class AuthorizationComponent implements OnInit {
 
   constructor(@Inject(LOCALE_ID) public localeId: string, public styleModeService: StyleModeService) { }
-  frameSrc = environment.LoginURL + window.navigator.language.substring(0, 2)+"/#/getCredential"+"?"+ "host="+ window.location.href+"&"+"language="+ window.navigator.language +"&" + "pathname="+window.location.pathname;
+  frameSrc = environment.LoginURL + window.navigator.language.substring(0, 2)+"/#/getCredential"+"?"+ "host="+ window.location.href+"&"+"language="+ window.navigator.language.slice(0, 2) +"&" + "pathname="+window.location.pathname;
   ngOnInit() {
     //console.log("va"+this.frameSrc);
     //(document.getElementById('iframeAccount')as any)["src"] = this.frameSrc;
