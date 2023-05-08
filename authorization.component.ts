@@ -28,9 +28,14 @@ export class AuthorizationComponent implements OnInit {
 
             if (event.data['type'] === "credential") {
               if (event.data.getToken !== 'undefined') {
-                localStorage.setItem("userToken", event.data.getToken)
-                localStorage.setItem("UserInfo", event.data.getUserInfo)
-                topWindow.removeEventListener("message", event)
+                if (localStorage.getItem("userToken") !== event.data.getToken) {
+                  localStorage.setItem("userToken", event.data.getToken)
+                  localStorage.setItem("UserInfo", event.data.getUserInfo)
+                  localStorage.setItem("darkMode", event.data.darkMode || true)
+                  topWindow.removeEventListener("message", event)
+                  window.location.reload()
+                }
+
               }
             }
           }
