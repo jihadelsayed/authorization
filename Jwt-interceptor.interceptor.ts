@@ -23,11 +23,7 @@ export class JwtInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
 
         if (error instanceof HttpErrorResponse) {
-<<<<<<< Updated upstream
           if (error.status === 401 || error.status === 403) {
-=======
-         if (error.status === 401 || error.status === 403) {
->>>>>>> Stashed changes
             // auto logout if 401 response returned from api
             localStorage.removeItem('userToken');
             localStorage.removeItem('UserInfo');
