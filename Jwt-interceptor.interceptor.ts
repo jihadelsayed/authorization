@@ -9,11 +9,12 @@ import {
 } from '@angular/common/http';
 
 import { catchError, Observable, throwError } from 'rxjs';
+import { StyleModeService } from '../header/style-mode.service';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
 
-  constructor(@Inject(LOCALE_ID) public localeId: string) { }
+  constructor(@Inject(LOCALE_ID) public localeId: string, public styleModeService: StyleModeService) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
@@ -22,10 +23,10 @@ export class JwtInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
 
         if (error instanceof HttpErrorResponse) {
-          if (error.status === 401) {
-
+          if (error.status === 401 || error.status === 403) {
             // auto logout if 401 response returned from api
             localStorage.removeItem('userToken');
+            localStorage.removeItem('UserInfo');
             const ho = window.location.hostname
             window.location.replace(
               "http://accounts." + ho.substring(ho.lastIndexOf(".", ho.lastIndexOf(".") - 1) + 1) || 'neetechs.com'
