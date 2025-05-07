@@ -1,5 +1,6 @@
-import { Component, OnInit, LOCALE_ID, Inject } from '@angular/core';
-import { environment } from 'src/environments/environment';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { RuntimeConfigService } from './services/runtime-config.service';
 
 @Component({
   selector: 'app-authorization',
@@ -7,44 +8,46 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./authorization.component.scss']
 })
 export class AuthorizationComponent implements OnInit {
+  frameSrc = '';
+  isBrowser = false;
 
-  constructor(@Inject(LOCALE_ID) public localeId: string) { }
-  frameSrc = environment.LoginURL + window.navigator.language.substring(0, 2)+"/#/getCredential"+"?"+ "host="+ window.location.href+"&"+"language="+ window.navigator.language.slice(0, 2) +"&" + "pathname="+window.location.pathname;
+  constructor(
+    private config: RuntimeConfigService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
+
   ngOnInit() {
-    //console.log("va"+this.frameSrc);
-    //(document.getElementById('iframeAccount')as any)["src"] = this.frameSrc;
+    if (isPlatformBrowser(this.platformId)) {
+      this.isBrowser = true;
 
-    // Authorization
-    if (localStorage.getItem("userToken") || null == null) {
-      const topWindow:any = window.top;
-      topWindow.addEventListener("message", (event:any) => {
-        if (localStorage.getItem("userToken") || null == null) {
+      const lang = window.navigator.language.substring(0, 2);
+      const host = window.location.href;
+      const pathname = window.location.pathname;
 
-          if (event.origin ===  window.location.protocol + '//' + window.location.host) {
-            return;
-          } else {
-            //console.log( window.location.protocol + '//' + window.location.host)
-            //console.log(event)
+      this.frameSrc = `${this.config.loginUrl}${lang}/#/getCredential?host=${host}&language=${lang}&pathname=${pathname}`;
 
-            if (event.data['type'] === "credential") {
-              if (event.data.getToken !== 'undefined') {
-                if (localStorage.getItem("userToken") !== event.data.getToken) {
-                  localStorage.setItem("userToken", event.data.getToken)
-                  localStorage.setItem("UserInfo", event.data.getUserInfo)
-                  localStorage.setItem("darkMode", event.data.darkMode || true)
-                  topWindow.removeEventListener("message", event)
-                  window.location.reload()
-                }
+      const iframe = document.getElementById('iframeAccount') as any;
+      if (iframe) iframe.src = this.frameSrc;
 
+      if (!localStorage.getItem("userToken")) {
+        const messageHandler = (event: any) => {
+          if (!localStorage.getItem("userToken")) {
+            if (event.origin !== window.location.origin) {
+              if (event.data?.type === "credential" && event.data.getToken) {
+                localStorage.setItem("userToken", event.data.getToken);
+                localStorage.setItem("UserInfo", event.data.getUserInfo);
+                localStorage.setItem("darkMode", event.data.darkMode || "true");
+                window.removeEventListener("message", messageHandler);
+                window.location.reload();
               }
             }
           }
-        }
-      }, false);
+        };
+
+        window.addEventListener("message", messageHandler, false);
+      }
+
+      console.log(this.frameSrc);
     }
-    (document.getElementById('iframeAccount')as any)["src"] = this.frameSrc;
-
-    console.log(this.frameSrc)
   }
-
 }

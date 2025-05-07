@@ -9,17 +9,19 @@ import {
 } from '@angular/common/http';
 
 import { catchError, Observable, throwError } from 'rxjs';
-import { StyleModeService } from '../header/style-mode.service';
+//import { StyleModeService } from '../header/style-mode.service';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
 
-  constructor(@Inject(LOCALE_ID) public localeId: string, public styleModeService: StyleModeService) { }
+  constructor(@Inject(LOCALE_ID) public localeId: string//, public styleModeService: StyleModeService
+) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
     const customReq = request.clone({});
-    return next.handle(request).pipe(
+    //return next.handle(request).pipe(
+      return next.handle(customReq).pipe(
       catchError((error: HttpErrorResponse) => {
 
         if (error instanceof HttpErrorResponse) {
