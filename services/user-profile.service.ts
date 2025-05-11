@@ -20,11 +20,11 @@ export class UserProfileService {
     return this.http.get(environment.SERVER_URL + 'api/profile/' + currentUsername,{ headers: this.httpHeaders });
   }
   putProfile(data: any,username: string): Observable<any> {
-    console.log(data)
+   // console.log(data)
     return this.http.put(environment.SERVER_URL + 'api/profile/'+username+"/", data, { headers: this.authenticateHttpHeaders });
   }
   patchProfile(data: any,username: string): Observable<any> {
-    console.log(data)
+  //  console.log(data)
     return this.http.patch(environment.SERVER_URL + 'api/profile/'+username+"/", data, { headers: this.authenticateHttpHeaders });
   }
 }

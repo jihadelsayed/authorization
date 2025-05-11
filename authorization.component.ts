@@ -1,19 +1,24 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RuntimeConfigService } from './services/runtime-config.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-authorization',
   templateUrl: './authorization.component.html',
   styleUrls: ['./authorization.component.scss']
 })
 export class AuthorizationComponent implements OnInit {
-  frameSrc = '';
+frameSrc: SafeResourceUrl = '';
   isBrowser = false;
 
   constructor(
     private config: RuntimeConfigService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+  private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
@@ -23,8 +28,9 @@ export class AuthorizationComponent implements OnInit {
       const lang = window.navigator.language.substring(0, 2);
       const host = window.location.href;
       const pathname = window.location.pathname;
+      const unsafeUrl = `${this.config.loginUrl}${lang}/#/getCredential?host=${host}&language=${lang}&pathname=${pathname}`;
 
-      this.frameSrc = `${this.config.loginUrl}${lang}/#/getCredential?host=${host}&language=${lang}&pathname=${pathname}`;
+      this.frameSrc = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeUrl);
 
       const iframe = document.getElementById('iframeAccount') as any;
       if (iframe) iframe.src = this.frameSrc;
@@ -47,7 +53,7 @@ export class AuthorizationComponent implements OnInit {
         window.addEventListener("message", messageHandler, false);
       }
 
-      console.log(this.frameSrc);
+     //console.log(this.frameSrc);
     }
   }
 }

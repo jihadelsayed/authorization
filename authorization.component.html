@@ -1,1 +1,1 @@
-<iframe style="display:none;" src="{{frameSrc}}" id="iframeAccount"></iframe>
+<iframe *ngIf="isBrowser" [src]="frameSrc" id="iframeAccount" style="display:none;"></iframe>
