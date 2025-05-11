@@ -3,10 +3,11 @@ import { isPlatformBrowser } from '@angular/common';
 import { RuntimeConfigService } from './services/runtime-config.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
+import { LoginPromptComponent } from './login-prompt/login-prompt.component';
 
 @Component({
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LoginPromptComponent],
   selector: 'app-authorization',
   templateUrl: './authorization.component.html',
   styleUrls: ['./authorization.component.scss']
@@ -14,46 +15,57 @@ import { CommonModule } from '@angular/common';
 export class AuthorizationComponent implements OnInit {
 frameSrc: SafeResourceUrl = '';
   isBrowser = false;
-
+  showLoginModal = false;
   constructor(
     private config: RuntimeConfigService,
     @Inject(PLATFORM_ID) private platformId: Object,
   private sanitizer: DomSanitizer
   ) {}
 
-  ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.isBrowser = true;
+ ngOnInit() {
+  if (!isPlatformBrowser(this.platformId)) return;
 
-      const lang = window.navigator.language.substring(0, 2);
-      const host = window.location.href;
-      const pathname = window.location.pathname;
-      const unsafeUrl = `${this.config.loginUrl}${lang}/#/getCredential?host=${host}&language=${lang}&pathname=${pathname}`;
+  this.isBrowser = true;
 
-      this.frameSrc = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeUrl);
+  const lang = window.navigator.language.substring(0, 2);
+  const host = window.location.href;
+  const pathname = window.location.pathname;
 
-      const iframe = document.getElementById('iframeAccount') as any;
-      if (iframe) iframe.src = this.frameSrc;
+  const unsafeUrl = `${this.config.loginUrl}getCredential?host=${host}&language=${lang}&pathname=${pathname}`;
+  this.frameSrc = this.sanitizer.bypassSecurityTrustResourceUrl(unsafeUrl);
 
-      if (!localStorage.getItem("userToken")) {
-        const messageHandler = (event: any) => {
-          if (!localStorage.getItem("userToken")) {
-            if (event.origin !== window.location.origin) {
-              if (event.data?.type === "credential" && event.data.getToken) {
-                localStorage.setItem("userToken", event.data.getToken);
-                localStorage.setItem("UserInfo", event.data.getUserInfo);
-                localStorage.setItem("darkMode", event.data.darkMode || "true");
-                window.removeEventListener("message", messageHandler);
-                window.location.reload();
-              }
-            }
-          }
-        };
+  // Attach the iframe src safely
+  const iframe = document.getElementById('iframeAccount') as HTMLIFrameElement;
+  if (iframe) iframe.src = this.frameSrc as string;
 
-        window.addEventListener("message", messageHandler, false);
-      }
+  // ✅ Unified listener for login_required or credential
+  const messageHandler = (event: MessageEvent) => {
+    if (event.origin !== "https://accounts.neetechs.com") return;
 
-     //console.log(this.frameSrc);
+    if (event.data?.type === "credential" && event.data.getToken) {
+      localStorage.setItem("userToken", event.data.getToken);
+      localStorage.setItem("UserInfo", event.data.getUserInfo);
+      localStorage.setItem("darkMode", event.data.darkMode || "true");
+      window.removeEventListener("message", messageHandler);
+      window.location.reload();
     }
-  }
+
+    if (event.data?.type === "login_required") {
+      this.showLoginModal = true;
+    }
+  };
+
+  window.addEventListener("message", messageHandler, false);
+}
+
+
+handleLoginPromptConfirm() {
+  const redirect = `https://accounts.neetechs.com/en/signIn?host=${window.location.origin}&pathname=${window.location.pathname}&language=en`;
+  window.location.href = redirect;
+}
+
+handleLoginPromptCancel() {
+  this.showLoginModal = false;
+}
+
 }

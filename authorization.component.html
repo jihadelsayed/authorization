@@ -1,1 +1,6 @@
 <iframe *ngIf="isBrowser" [src]="frameSrc" id="iframeAccount" style="display:none;"></iframe>
+<app-login-prompt
+  *ngIf="showLoginModal"
+  (confirm)="handleLoginPromptConfirm()"
+  (cancel)="handleLoginPromptCancel()"
+></app-login-prompt>
