@@ -30,7 +30,7 @@ export class RuntimeConfigService {
       this.serverUrl = `https://server.${hostname}/`;
       this.serverUrlWithoutSlash = this.serverUrl.slice(0, -1);
       this.chatUrl = `wss://server.${hostname}/ws/chat/`;
-      this.loginUrl = `https://accounts.${hostname}/${lang}/getCredential`;
+      this.loginUrl = `https://accounts.${hostname}/${lang}/`;
     }
   }
 }
