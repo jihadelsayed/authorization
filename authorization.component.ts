@@ -47,7 +47,7 @@ frameSrc: SafeResourceUrl = '';
       localStorage.setItem("UserInfo", event.data.getUserInfo);
       localStorage.setItem("darkMode", event.data.darkMode || "true");
       window.removeEventListener("message", messageHandler);
-      window.location.reload();
+     // window.location.reload();
     }
 
     if (event.data?.type === "login_required") {
