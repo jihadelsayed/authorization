@@ -42,13 +42,16 @@ frameSrc: SafeResourceUrl = '';
   const messageHandler = (event: MessageEvent) => {
     if (event.origin !== "https://accounts.neetechs.com") return;
 
-    if (event.data?.type === "credential" && event.data.getToken) {
-      localStorage.setItem("userToken", event.data.getToken);
-      localStorage.setItem("UserInfo", event.data.getUserInfo);
-      localStorage.setItem("darkMode", event.data.darkMode || "true");
-      window.removeEventListener("message", messageHandler);
-     // window.location.reload();
-    }
+if (event.data?.type === "credential" && event.data.getToken) {
+  if (!localStorage.getItem("userToken")) {
+    localStorage.setItem("userToken", event.data.getToken);
+    localStorage.setItem("UserInfo", event.data.getUserInfo);
+    localStorage.setItem("darkMode", event.data.darkMode || "true");
+    window.removeEventListener("message", messageHandler);
+    window.location.reload();
+  }
+}
+
 
     if (event.data?.type === "login_required") {
       this.showLoginModal = true;
