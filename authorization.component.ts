@@ -6,11 +6,10 @@ import { CommonModule } from '@angular/common';
 import { LoginPromptComponent } from './login-prompt/login-prompt.component';
 
 @Component({
-  standalone: true,
-  imports: [CommonModule, LoginPromptComponent],
-  selector: 'app-authorization',
-  templateUrl: './authorization.component.html',
-  styleUrls: ['./authorization.component.scss']
+    imports: [CommonModule, LoginPromptComponent],
+    selector: 'app-authorization',
+    templateUrl: './authorization.component.html',
+    styleUrls: ['./authorization.component.scss']
 })
 export class AuthorizationComponent implements OnInit {
 frameSrc: SafeResourceUrl = '';
